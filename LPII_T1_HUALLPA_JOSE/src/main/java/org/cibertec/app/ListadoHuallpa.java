@@ -63,11 +63,11 @@ public class ListadoHuallpa extends JFrame {
 
         for (Compra compra : compras) {
             Object[] row = {
-                compra.getNroCompra(),
-                compra.getFecha(),
-                compra.getProducto(),
-                compra.getProveedor(),
-                compra.getTotal()
+                compra.getNroCompra(), 
+                compra.getFecha(), 
+                compra.getProducto(), 
+                compra.getProveedor(), 
+                compra.getTotal() 
             };
             tableModel.addRow(row);
         }
