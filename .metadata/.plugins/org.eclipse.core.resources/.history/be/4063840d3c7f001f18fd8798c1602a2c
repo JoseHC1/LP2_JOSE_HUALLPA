@@ -1,0 +1,58 @@
+package org.cibertec.controlador;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.StoredProcedureQuery;
+import javax.persistence.TypedQuery;
+
+import org.cibertec.model.Categoria;
+import org.cibertec.model.Compra;
+import java.util.Date;
+
+public class CompraJpaController implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	private EntityManager em;
+	private EntityManagerFactory emf=Persistence.createEntityManagerFactory("jpa_sesion02");
+	
+	public CompraJpaController(EntityManagerFactory emf) {
+		this.emf=emf;
+	}
+		
+	public EntityManager getEntityManager() {
+		return emf.createEntityManager();
+	}
+	
+	public CompraJpaController() {		
+	}
+	
+	public List<Compra> findAllCompras() {
+		em = getEntityManager();
+	    em.getTransaction().begin();
+	    
+	    StoredProcedureQuery query = em.createStoredProcedureQuery("listarCompras");
+	    List<Object[]> results = query.getResultList();
+	    List<Compra> compras = new ArrayList<>();
+	    
+	    for (Object[] row : results) {
+	        Compra compra = new Compra();
+	        compra.setNroCompra((Integer) row[0]);
+	        compra.setFecha((Date) row[1]);
+	        compra.setProducto((String) row[2]);
+	        compra.setProveedor((String) row[3]);
+	        compra.setTotal((float) row[4]);
+
+	        compras.add(compra);
+	    }
+
+	    em.getTransaction().commit();
+	    em.close();
+	    
+	    return compras;
+    }
+}

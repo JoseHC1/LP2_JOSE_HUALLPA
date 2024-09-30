@@ -1,0 +1,36 @@
+package org.cibertec.model;
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name="detalleins")
+public class Detalle implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
+    private DetalleInsId id;
+
+    @Column(name="cantidad", nullable = false)
+    private int cantidad;
+
+    @ManyToOne
+    @JoinColumn(name = "nro_compra", referencedColumnName = "nro_compra", insertable = false, updatable = false)
+    private CompraIns compraIns;
+
+    @ManyToOne
+    @JoinColumn(name = "id_insumo", referencedColumnName = "id_insumo", insertable = false, updatable = false)
+    private Insumo insumo;
+
+}

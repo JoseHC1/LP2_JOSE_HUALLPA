@@ -1,0 +1,105 @@
+package org.cibertec.app;
+
+import java.awt.EventQueue;
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import org.cibertec.model.Compra;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
+public class RegistroHuallpa extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+
+	private JTextField idProveedorField;
+    private JTextField totalField;
+    private JButton registrarButton;
+    private JLabel mensajeLabel;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					RegistroHuallpa frame = new RegistroHuallpa();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public RegistroHuallpa() {
+        setTitle("Registro de Compras");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridLayout(5, 2));
+
+        JLabel idProveedorLabel = new JLabel("ID Proveedor:");
+        idProveedorField = new JTextField();
+        
+        JLabel totalLabel = new JLabel("Total:");
+        totalField = new JTextField();
+
+        registrarButton = new JButton("Registrar Compra");
+        mensajeLabel = new JLabel("");
+
+        add(idProveedorLabel);
+        add(idProveedorField);
+        add(totalLabel);
+        add(totalField);
+        add(new JLabel("")); 
+        add(registrarButton);
+        add(new JLabel("")); 
+        add(mensajeLabel);
+
+        registrarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registrarCompra();
+            }
+        });
+	}
+	
+	private void registrarCompra() {
+        try {
+            Compra compra = new Compra();
+            compra.setFecha(new Date());
+
+            int idProveedor = Integer.parseInt(idProveedorField.getText());
+            int total = Integer.parseInt(totalField.getText());
+
+            compra.setIdProveedor(idProveedor);
+            compra.setTotal(total);
+
+            mensajeLabel.setText("Registro exitoso!");
+            mensajeLabel.setForeground(Color.GREEN);
+            System.out.println("Detalles de la compra:");
+            System.out.println("Fecha: " + new SimpleDateFormat("dd/MM/yyyy").format(compra.getFecha()));
+            System.out.println("ID Proveedor: " + compra.getIdProveedor());
+            System.out.println("Total: " + compra.getTotal());
+
+        } catch (NumberFormatException e) {
+            mensajeLabel.setText("Error: Ingrese valores válidos.");
+            mensajeLabel.setForeground(Color.RED);
+        } catch (Exception e) {
+            mensajeLabel.setText("Error: " + e.getMessage());
+            mensajeLabel.setForeground(Color.RED);
+        }
+    }
+
+}

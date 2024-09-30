@@ -1,0 +1,103 @@
+package org.cibertec.app;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.sql.*;
+import java.util.Vector;
+
+public class ListadoHuallpa extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+    private JTable table;
+    private DefaultTableModel tableModel;
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ListadoHuallpa frame = new ListadoHuallpa();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public ListadoHuallpa() {
+		setTitle("Listado de Compras");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        tableModel = new DefaultTableModel(new String[]{"Número de Compra", "Fecha", "Nombre del Producto", "ID Proveedor", "Total"}, 0);
+        table = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane, BorderLayout.CENTER);
+        
+        cargarDatos();
+	}
+	
+	private void cargarDatos() {
+		string
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            // Conectar a la base de datos
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/BD1_Apellido", "usuario", "contraseña");
+            statement = connection.createStatement();
+            
+            // Consulta para obtener los datos de las compras
+            String sql = "SELECT c.nro_compra, c.fecha, p.descripcion, c.id_proveedor, c.total " +
+                         "FROM compra_ins c " +
+                         "JOIN detalleins d ON c.nro_compra = d.nro_compra " +
+                         "JOIN insumos p ON d.id_insumo = p.id_insumo";
+            resultSet = statement.executeQuery(sql);
+
+            // Llenar la tabla con los resultados
+            while (resultSet.next()) {
+                int nroCompra = resultSet.getInt("nro_compra");
+                Date fecha = resultSet.getDate("fecha");
+                String descripcion = resultSet.getString("descripcion");
+                int idProveedor = resultSet.getInt("id_proveedor");
+                int total = resultSet.getInt("total");
+
+                // Agregar fila a la tabla
+                Vector<Object> row = new Vector<>();
+                row.add(nroCompra);
+                row.add(fecha);
+                row.add(descripcion);
+                row.add(idProveedor);
+                row.add(total);
+                tableModel.addRow(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Cerrar conexiones
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+}
